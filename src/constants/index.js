@@ -1,3 +1,5 @@
+// basically just search terms for the api
+
 export const FAVORITES = ["the fall camus", "atonement mcewan", "pride and prejudice austen", "the art of loving"];
 
 export const RECENT_ACTIVITY = ["crush siken", "requiem for a dream", "dune herbert", "catch 22"];

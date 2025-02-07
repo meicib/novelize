@@ -7,9 +7,11 @@ const Profile = () => {
     const [wantToReadData, setWantToReadData] = useState([]);
 
     function encode(str) {
-        return str.split(' ').join('+')
+        return str.split(' ').join('+') // for open library api specifically
     }
 
+    // takes a list of books/technically search terms, returns title,
+    // author name, and image ID (not the actual image!) if possible
     const fetchBooks = async (bookList) => {
         try {
             const results = await Promise.all(
@@ -18,7 +20,7 @@ const Profile = () => {
                         `https://openlibrary.org/search.json?q=${encode(bookTitle)}&lang=en`
                     );
                     const data = await response.json();
-                    console.log("data: ", data);
+                    // console.log("data: ", data);
                     return {
                         title: data.docs[0]?.title, 
                         author: data.docs[0]?.author_name?.join(', '), 
@@ -28,7 +30,7 @@ const Profile = () => {
             );
             return results;
         } catch (error) {
-            console.error("Error fetching books:", error);
+            console.error("error :(", error);
             return [];
         }
     };
@@ -58,7 +60,8 @@ const Profile = () => {
         <>
             <div className="flex flex-col items-center justify-center min-h-screen">
                 <div className='text-[#494949] flex flex-col gap-10 items-center'>
-                    {/* profile picture, name, and stats */}
+
+                    {/* profile picture, username, and stats */}
                     <div className="flex flex-row gap-75">
                         <div className="flex flex-row items-center gap-10">
                             <img className="rounded-full w-30" src="profile.jpg"/>
@@ -92,10 +95,14 @@ const Profile = () => {
                                         {book.cover && (
                                             <div className="relative mt-2">
                                                 <img
+                                                    // finding image had NO business being this hard to implement
+                                                    // openlibrary pleaseeeee better documentation :(
                                                     src={`https://covers.openlibrary.org/b/id/${book.cover}-M.jpg`}
                                                     alt={book.title}
                                                     className="w-20 h-30 object-cover rounded-sm"
                                                 />
+
+                                                {/* hover to see title and author (it looked too messy otherwise) */}
                                                 <div className="absolute inset-0 bg-[#494949] bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-[#FFFDF6] transition-opacity w-20 h-30 rounded-sm">
                                                     <div className="text-center">
                                                         <p className="font-bold">{(book.title).toUpperCase()}</p>
@@ -111,6 +118,8 @@ const Profile = () => {
                         
 
                         {/* want to read section */}
+                        {/* same as the favorites, i probably should have made each of these a separate component */}
+                        {/* next time! */}
                         <div className='flex flex-col'>
                             <p className='text-sm border-b'>WANT TO READ</p>
                             <div className='flex flex-row gap-4'>

@@ -4,29 +4,29 @@ import { IoMdHeartEmpty } from "react-icons/io";
 import { GoClock } from "react-icons/go";
 
 const Search = () => {
-    const [books, setBooks] = useState([]);
+    const [books, setBooks] = useState([]); // list of books from api call on search terms
     const [searchTerm, setSearchTerm] = useState("");
 
     function encode(str) {
-        return str.split(' ').join('+')
+        return str.split(' ').join('+') // this is specific to open library api
     }
 
     const getBooks = async (searchTerms) => {
         try {
             const response = await fetch(`https://openlibrary.org/search.json?q=${encode(searchTerms)}&lang=en`);
             const data = await response.json();
-            console.log("data: ", data)
+            // console.log("data: ", data)
             return data.docs.slice(0, 5);
         } catch (error) {
-            console.error("Error getting books:", error);
+            console.error("error!", error);
             return [];
         }
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        const booksData = await getBooks(searchTerm);
-        setBooks(booksData);
+        e.preventDefault(); // prevent form from reloading
+        const booksData = await getBooks(searchTerm); // call api on search term(s)
+        setBooks(booksData); // and put the api result in the books list
     };
 
     return (
@@ -44,11 +44,13 @@ const Search = () => {
                 </button>
             </form>
 
+            {/* displays up to 5 books as a result of search term in a scrollable container */}
             {books.length > 0 && (
                 <div className="w-1/2 h-123 overflow-y-auto">
                     <ul className="flex flex-col gap-4">
                         {books.map((book, index) => (
                             <li key={index}>
+                                {/* only display the book if the api returns ALL 3 factors */}
                                 {book.cover_i && book.title && book.author_name && (
                                     <div className="flex flex-row items-start text-sm text-[#494949]">
                                         <img
@@ -59,6 +61,9 @@ const Search = () => {
                                         <div className="pt-4 pl-4">
                                             <h3 className="font-bold">{book.title}</h3>
                                             <p className="">{book.author_name.join(", ")}</p>
+
+                                            {/* non-functional for now, but theoretically adds to recent activity, */}
+                                            {/* favorites, and want to read, respectively */}
                                             <div className="flex flex-row gap-2">
                                                 <button className="text-[25px] mt-9"> <IoAddCircleOutline /> </button>
                                                 <button className="text-[25px] mt-9"> <IoMdHeartEmpty /> </button>

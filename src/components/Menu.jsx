@@ -16,6 +16,7 @@ const Menu = () => {
                 <ul className="pt-15 font-[HeadingNow] text-[40px]">
                     <li>
                         <div className="w-full hover:bg-[#494949] hover:text-[#FAF6E9] transition duration-250">
+                            {/* closes the menu after you click something */}
                             <Link className="pl-10" to="/profile" onClick={() => setIsOpen(false)}>
                                 PROFILE
                             </Link>
@@ -31,7 +32,7 @@ const Menu = () => {
                 </ul>
             </div>
 
-            {/* button to open and close menu */}
+            {/* button to open and close menu manually */}
             <button 
                 onClick={() => setIsOpen(!isOpen)} 
                 className="text-[#494949] absolute top-4 right-4">
