@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home.jsx";
 import Menu from './components/Menu.jsx'
 import Profile from './components/Profile.jsx'
+import Search from "./components/Search.jsx";
 
 function App() {
   return (
@@ -10,8 +11,10 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/search" element={<div>Search Page</div>} />
+                <Route path="/search" element={<Search />} />
             </Routes>
+            {/* background */}
+            <div className="absolute inset-0 -z-10 min-h-screen w-full bg-[#ECE8D9] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"></div>
             <Menu />
             <a href="/" className="absolute top-4 left-4 p-2 text-[#494949] text-2xl font-[Stretch]">N .</a>
             <p className="absolute bottom-2 left-2 p-2 text-[#494949] text-sm">

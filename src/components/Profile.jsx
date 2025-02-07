@@ -20,8 +20,8 @@ const Profile = () => {
                     const data = await response.json();
                     console.log("data: ", data);
                     return {
-                        title: data.docs[0]?.title, // Handle cases where no book is found
-                        author: data.docs[0]?.author_name?.join(', '), // Join multiple authors if present
+                        title: data.docs[0]?.title, 
+                        author: data.docs[0]?.author_name?.join(', '), 
                         cover: data.docs[0]?.cover_i
                     };
                 })
@@ -34,7 +34,6 @@ const Profile = () => {
     };
 
     useEffect(() => {
-        // Call fetchBooks for each section separately
         const fetchFavorites = async () => {
             const fetchedFavorites = await fetchBooks(FAVORITES);
             setFavoritesData(fetchedFavorites);
@@ -50,7 +49,6 @@ const Profile = () => {
             setWantToReadData(fetchedWantToRead);
         };
 
-        // Fetch data for each section
         fetchFavorites();
         fetchRecent();
         fetchWantToRead();
