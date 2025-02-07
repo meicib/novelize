@@ -1,33 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./components/Home.jsx";
+import Menu from './components/Menu.jsx'
+import Profile from './components/Profile.jsx'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Router>
+            <Routes>
+              <Route path="/" element={<Home />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/search" element={<div>Search Page</div>} />
+            </Routes>
+            <Menu />
+            <a href="/" className="absolute top-4 left-4 p-2 text-[#494949] text-2xl font-[Stretch]">N .</a>
+            <p className="absolute bottom-2 left-2 p-2 text-[#494949] text-sm">
+              made by <a href="https://meicib.vercel.app/" className="hover:bg-[#494949] hover:text-[#FFFDF6] transition duration-200">meicib</a>
+            </p>
+            
+        </Router>
     </>
   )
 }

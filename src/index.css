@@ -1,7 +1,35 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "HeadingNow";
+  src: url("src/assets/fonts/heading_now/HeadingNowTrial-45Medium.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Haas";
+  src: url("src/assets/fonts/alte_haas_grotesk/AlteHaasGroteskRegular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Haas";
+  src: url("src/assets/fonts/alte_haas_grotesk/AlteHaasGroteskBold.ttf");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Stretch"; 
+  src: url("src/assets/fonts/StretchPro.otf");
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Haas", system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
