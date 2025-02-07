@@ -1,13 +1,20 @@
 import { useState } from "react";
 import { useBookContext } from "./BookContext.jsx";
-import { IoArrowForward, IoAddCircleOutline } from "react-icons/io5";
-import { IoMdHeartEmpty } from "react-icons/io";
-import { GoClock } from "react-icons/go";
+import { IoArrowForward, IoAddCircleOutline, IoAddCircle } from "react-icons/io5";
+import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
+import { GoClock, GoClockFill } from "react-icons/go";
 
 const Search = () => {
     const [books, setBooks] = useState([]); // list of books from api call on search terms
     const [searchTerm, setSearchTerm] = useState("");
-    const { addToFavorites, addToRecentActivity, addToWantToRead } = useBookContext(); // add books directly from search to profile (technically to the list first)
+    const { addToFavorites, addToRecentActivity, addToWantToRead } = useBookContext();
+    
+    // separate states for each book's button status
+    const [addedStates, setAddedStates] = useState({
+        recentAdded: {},
+        favAdded: {},
+        wantAdded: {}
+    });
 
     function encode(str) {
         return str.split(' ').join('+') // this is specific to open library api
@@ -17,7 +24,6 @@ const Search = () => {
         try {
             const response = await fetch(`https://openlibrary.org/search.json?q=${encode(searchTerms)}&lang=en`);
             const data = await response.json();
-            // console.log("data: ", data)
             return data.docs.slice(0, 5);
         } catch (error) {
             console.error("error!", error);
@@ -29,6 +35,24 @@ const Search = () => {
         e.preventDefault(); // prevent form from reloading
         const booksData = await getBooks(searchTerm); // call api on search term(s)
         setBooks(booksData); // and put the api result in the books list
+    };
+
+    const handleAdd = (type, book) => {
+        // update the added state based on the button type and book title
+        setAddedStates((prevState) => {
+            const newState = { ...prevState };
+            newState[type][book.title] = true; // mark the book as added for the specific button type
+            return newState;
+        });
+
+        // call the corresponding function to add the book to the respective list
+        if (type === "recentAdded") {
+            addToRecentActivity(book.title);
+        } else if (type === "favAdded") {
+            addToFavorites(book.title);
+        } else if (type === "wantAdded") {
+            addToWantToRead(book.title);
+        }
     };
 
     return (
@@ -52,7 +76,6 @@ const Search = () => {
                     <ul className="flex flex-col gap-4">
                         {books.map((book, index) => (
                             <li key={index}>
-                                {/* only display the book if the api returns ALL 3 factors */}
                                 {book.cover_i && book.title && book.author_name && (
                                     <div className="flex flex-row items-start text-sm text-[#494949]">
                                         <img
@@ -62,25 +85,24 @@ const Search = () => {
                                         />
                                         <div className="pt-4 pl-4">
                                             <h3 className="font-bold">{book.title}</h3>
-                                            <p className="">{book.author_name.join(", ")}</p>
+                                            <p>{book.author_name.join(", ")}</p>
 
-                                            {/* non-functional for now, but theoretically adds to recent activity, */}
-                                            {/* favorites, and want to read, respectively */}
+                                            {/* click to add to library, to recent, favorites, and want-to-read shelves respectively*/}
                                             <div className="flex flex-row gap-2">
                                                 <button 
                                                     className="text-[25px] mt-9 transition-transform duration-200 hover:scale-110"
-                                                    onClick={() => addToRecentActivity(`${book.title}`)}> 
-                                                    <IoAddCircleOutline /> 
+                                                    onClick={() => handleAdd("recentAdded", book)}> 
+                                                    {addedStates.recentAdded[book.title] ? <IoAddCircle /> : <IoAddCircleOutline />}
                                                 </button>
                                                 <button 
                                                     className="text-[25px] mt-9 transition-transform duration-200 hover:scale-110"
-                                                    onClick={() => addToFavorites(`${book.title}`)}> 
-                                                    <IoMdHeartEmpty /> 
+                                                    onClick={() => handleAdd("favAdded", book)}> 
+                                                    {addedStates.favAdded[book.title] ? <IoMdHeart /> : <IoMdHeartEmpty />}
                                                 </button>
                                                 <button 
                                                     className="text-[23px] mt-9 transition-transform duration-200 hover:scale-110"
-                                                    onClick={() => addToWantToRead(`${book.title}`)}>
-                                                    <GoClock />
+                                                    onClick={() => handleAdd("wantAdded", book)}>
+                                                    {addedStates.wantAdded[book.title] ? <GoClockFill /> : <GoClock />}
                                                 </button>
                                             </div>
                                         </div>
@@ -92,8 +114,7 @@ const Search = () => {
                 </div>
             )}
         </div>
-
-    )
-}
+    );
+};
 
 export default Search;
