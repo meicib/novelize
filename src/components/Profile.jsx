@@ -1,10 +1,11 @@
-import { FAVORITES, RECENT_ACTIVITY, WANT_TO_READ } from '../constants/index.js'
 import { useState, useEffect } from 'react';
+import { useBookContext } from "./BookContext.jsx";
 
 const Profile = () => {
     const [favoritesData, setFavoritesData] = useState([]);
     const [recentData, setRecentData] = useState([]);
     const [wantToReadData, setWantToReadData] = useState([]);
+    const { favorites, recentActivity, wantToRead } = useBookContext(); // get the most updated lists from bookContext
 
     function encode(str) {
         return str.split(' ').join('+') // for open library api specifically
@@ -13,6 +14,8 @@ const Profile = () => {
     // takes a list of books/technically search terms, returns title,
     // author name, and image ID (not the actual image!) if possible
     const fetchBooks = async (bookList) => {
+        console.log("booklist", bookList)
+        console.log("booklist type", typeof(bookList))
         try {
             const results = await Promise.all(
                 bookList.map(async (bookTitle) => {
@@ -37,24 +40,24 @@ const Profile = () => {
 
     useEffect(() => {
         const fetchFavorites = async () => {
-            const fetchedFavorites = await fetchBooks(FAVORITES);
+            const fetchedFavorites = await fetchBooks(favorites);
             setFavoritesData(fetchedFavorites);
         };
 
         const fetchRecent = async () => {
-            const fetchedRecent = await fetchBooks(RECENT_ACTIVITY);
+            const fetchedRecent = await fetchBooks(recentActivity);
             setRecentData(fetchedRecent);
         };
 
         const fetchWantToRead = async () => {
-            const fetchedWantToRead = await fetchBooks(WANT_TO_READ);
+            const fetchedWantToRead = await fetchBooks(wantToRead);
             setWantToReadData(fetchedWantToRead);
         };
 
         fetchFavorites();
         fetchRecent();
         fetchWantToRead();
-    }, []);
+    }, [favorites, recentActivity, wantToRead]);
 
     return (
         <>
@@ -91,27 +94,28 @@ const Profile = () => {
                             <p className='text-sm border-b'>FAVORITES</p>
                             <div className='flex flex-row gap-4'>
                                 {favoritesData.map((book, index) => (
-                                    <div key={index} className="flex flex-col items-center text-xs group">
-                                        {book.cover && (
-                                            <div className="relative mt-2">
-                                                <img
-                                                    // finding image had NO business being this hard to implement
-                                                    // openlibrary pleaseeeee better documentation :(
-                                                    src={`https://covers.openlibrary.org/b/id/${book.cover}-M.jpg`}
-                                                    alt={book.title}
-                                                    className="w-20 h-30 object-cover rounded-sm"
-                                                />
+                                     index < 4 && (
+                                        <div key={index} className="flex flex-col items-center text-xs group">
+                                            {book.cover && (
+                                                <div className="relative mt-2">
+                                                    <img
+                                                        // finding image had NO business being this hard to implement
+                                                        // openlibrary pleaseeeee better documentation :(
+                                                        src={`https://covers.openlibrary.org/b/id/${book.cover}-M.jpg`}
+                                                        alt={book.title}
+                                                        className="w-20 h-30 object-cover rounded-sm"
+                                                    />
 
-                                                {/* hover to see title and author (it looked too messy otherwise) */}
-                                                <div className="absolute inset-0 bg-[#494949] bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-[#FFFDF6] transition-opacity w-20 h-30 rounded-sm">
-                                                    <div className="text-center">
-                                                        <p className="font-bold">{(book.title).toUpperCase()}</p>
-                                                        <p>{book.author}</p>
+                                                    {/* hover to see title and author (it looked too messy otherwise) */}
+                                                    <div className="absolute inset-0 bg-[#494949] bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-[#FFFDF6] transition-opacity w-20 h-30 rounded-sm">
+                                                        <div className="text-center">
+                                                            <p className="font-bold">{(book.title).toUpperCase()}</p>
+                                                            <p>{book.author}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        )}
-                                    </div>
+                                            )}
+                                        </div>)
                                 ))}
                             </div>
                         </div>
@@ -124,23 +128,24 @@ const Profile = () => {
                             <p className='text-sm border-b'>WANT TO READ</p>
                             <div className='flex flex-row gap-4'>
                                 {wantToReadData.map((book, index) => (
-                                    <div key={index} className="flex flex-col items-center text-xs group">
-                                        {book.cover && (
-                                            <div className="relative mt-2">
-                                                <img
-                                                    src={`https://covers.openlibrary.org/b/id/${book.cover}-M.jpg`}
-                                                    alt={book.title}
-                                                    className="w-20 h-30 object-cover rounded-sm"
-                                                />
-                                                <div className="absolute inset-0 bg-[#494949] bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-[#FFFDF6] transition-opacity w-20 h-30 rounded-sm">
-                                                    <div className="text-center">
-                                                        <p className="font-bold">{(book.title).toUpperCase()}</p>
-                                                        <p>{book.author}</p>
+                                    index < 4 && (
+                                        <div key={index} className="flex flex-col items-center text-xs group">
+                                            {book.cover && (
+                                                <div className="relative mt-2">
+                                                    <img
+                                                        src={`https://covers.openlibrary.org/b/id/${book.cover}-M.jpg`}
+                                                        alt={book.title}
+                                                        className="w-20 h-30 object-cover rounded-sm"
+                                                    />
+                                                    <div className="absolute inset-0 bg-[#494949] bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-[#FFFDF6] transition-opacity w-20 h-30 rounded-sm">
+                                                        <div className="text-center">
+                                                            <p className="font-bold">{(book.title).toUpperCase()}</p>
+                                                            <p>{book.author}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        )}
-                                    </div>
+                                            )}
+                                        </div>)
                                 ))}
                             </div>
                         </div>
@@ -150,23 +155,24 @@ const Profile = () => {
                             <p className='text-sm border-b'>RECENT ACTIVITY</p>
                             <div className='flex flex-row gap-4'>
                                 {recentData.map((book, index) => (
-                                    <div key={index} className="flex flex-col items-center text-xs group">
-                                        {book.cover && (
-                                            <div className="relative mt-2">
-                                                <img
-                                                    src={`https://covers.openlibrary.org/b/id/${book.cover}-M.jpg`}
-                                                    alt={book.title}
-                                                    className="w-20 h-30 object-cover rounded-sm"
-                                                />
-                                                <div className="absolute inset-0 bg-[#494949] bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-[#FFFDF6] transition-opacity w-20 h-30 rounded-sm">
-                                                    <div className="text-center">
-                                                        <p className="font-bold">{(book.title).toUpperCase()}</p>
-                                                        <p>{book.author}</p>
+                                     index < 4 && (
+                                        <div key={index} className="flex flex-col items-center text-xs group">
+                                            {book.cover && (
+                                                <div className="relative mt-2">
+                                                    <img
+                                                        src={`https://covers.openlibrary.org/b/id/${book.cover}-M.jpg`}
+                                                        alt={book.title}
+                                                        className="w-20 h-30 object-cover rounded-sm"
+                                                    />
+                                                    <div className="absolute inset-0 bg-[#494949] bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-[#FFFDF6] transition-opacity w-20 h-30 rounded-sm">
+                                                        <div className="text-center">
+                                                            <p className="font-bold">{(book.title).toUpperCase()}</p>
+                                                            <p>{book.author}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        )}
-                                    </div>
+                                            )}
+                                        </div>)
                                 ))}
                             </div>
                         </div>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useBookContext } from "./BookContext.jsx";
 import { IoArrowForward, IoAddCircleOutline } from "react-icons/io5";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { GoClock } from "react-icons/go";
@@ -6,6 +7,7 @@ import { GoClock } from "react-icons/go";
 const Search = () => {
     const [books, setBooks] = useState([]); // list of books from api call on search terms
     const [searchTerm, setSearchTerm] = useState("");
+    const { addToFavorites, addToRecentActivity, addToWantToRead } = useBookContext(); // add books directly from search to profile (technically to the list first)
 
     function encode(str) {
         return str.split(' ').join('+') // this is specific to open library api
@@ -65,11 +67,22 @@ const Search = () => {
                                             {/* non-functional for now, but theoretically adds to recent activity, */}
                                             {/* favorites, and want to read, respectively */}
                                             <div className="flex flex-row gap-2">
-                                                <button className="text-[25px] mt-9"> <IoAddCircleOutline /> </button>
-                                                <button className="text-[25px] mt-9"> <IoMdHeartEmpty /> </button>
-                                                <button className="text-[23px] mt-9"> <GoClock /> </button>
+                                                <button 
+                                                    className="text-[25px] mt-9 transition-transform duration-200 hover:scale-110"
+                                                    onClick={() => addToRecentActivity(`${book.title}`)}> 
+                                                    <IoAddCircleOutline /> 
+                                                </button>
+                                                <button 
+                                                    className="text-[25px] mt-9 transition-transform duration-200 hover:scale-110"
+                                                    onClick={() => addToFavorites(`${book.title}`)}> 
+                                                    <IoMdHeartEmpty /> 
+                                                </button>
+                                                <button 
+                                                    className="text-[23px] mt-9 transition-transform duration-200 hover:scale-110"
+                                                    onClick={() => addToWantToRead(`${book.title}`)}>
+                                                    <GoClock />
+                                                </button>
                                             </div>
-                                            
                                         </div>
                                     </div>
                                 )}
