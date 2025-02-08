@@ -24,13 +24,13 @@ export const BookProvider = ({ children }) => {
 
     const addToFavorites = (book) => {
         setFavorites((prevFavorites) => {
-            return prevFavorites.unshift(book); // adds to beginning
+            return [book, ...prevFavorites]; // adds to beginning
         });
     };
 
     const addToRecentActivity = (book) => {
         setRecentActivity((prevRecent) => {
-            return prevRecent.unshift(book);
+            return [book, ...prevRecent];
         }); 
     };
 
